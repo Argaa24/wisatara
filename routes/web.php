@@ -10,6 +10,22 @@ use Illuminate\Support\Facades\Route;
 // Landing Page Publik
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 
+// Inisialisasi Database Cloud (Migrate & Seed Otomatis)
+Route::get('/init-db', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate --force');
+        \Illuminate\Support\Facades\Artisan::call('db:seed --force');
+        return '<div style="font-family:sans-serif; text-align:center; padding:50px;">
+            <h1 style="color:#059669;">✅ Database Berhasil Diisi & Dimigrasikan!</h1>
+            <p>Akun admin, pemandu (bagus@wisatara.com), dan wisatawan (michael@gmail.com) sudah siap digunakan.</p>
+            <br>
+            <a href="/login" style="background:#0f172a; color:#fff; padding:12px 24px; border-radius:10px; text-decoration:none; font-weight:bold;">👉 Pergi ke Halaman Login</a>
+        </div>';
+    } catch (\Throwable $e) {
+        return 'Gagal inisialisasi: ' . $e->getMessage();
+    }
+});
+
 // Autentikasi Pengguna (Login, Register, Logout)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
