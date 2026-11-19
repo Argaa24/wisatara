@@ -23,6 +23,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        if (User::where('email', 'admin@wisatara.com')->exists()) {
+            return;
+        }
+
         // 1. Akun Admin Wisatara
         $admin = User::create([
             'name' => 'Administrator Wisatara',
