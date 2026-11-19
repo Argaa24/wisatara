@@ -43,6 +43,12 @@
 
     <!-- CONTENT -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
+        @if(session('success'))
+            <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold flex items-center space-x-2">
+                <span>🎉</span>
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
         <!-- Banner Host & Status Verifikasi -->
         <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 rounded-3xl p-8 sm:p-10 text-white mb-8 shadow-lg relative overflow-hidden">
             <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
@@ -169,9 +175,14 @@
 
         <!-- Section: Paket Tur Saya -->
         <div>
-            <div class="mb-6">
-                <h2 class="text-2xl font-extrabold text-slate-900">Paket Tur Saya & Itinerary</h2>
-                <p class="text-sm text-slate-500">Paket pengalaman privat yang Anda tawarkan ke wisatawan.</p>
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-900">Paket Tur Saya & Itinerary</h2>
+                    <p class="text-sm text-slate-500">Paket pengalaman privat yang Anda tawarkan ke wisatawan.</p>
+                </div>
+                <a href="/pemandu/paket/create" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl text-xs transition shadow-md shadow-emerald-600/20 flex items-center space-x-1.5">
+                    <span>+ Buat Paket Tur Baru</span>
+                </a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

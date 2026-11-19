@@ -43,6 +43,12 @@
 
     <!-- CONTENT -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
+        @if(session('success'))
+            <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold flex items-center space-x-2">
+                <span>🎉</span>
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
         <!-- Hero Header -->
         <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 sm:p-10 text-white mb-10 shadow-lg relative overflow-hidden">
             <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">

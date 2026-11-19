@@ -378,9 +378,10 @@
                                 <span class="text-lg font-black text-brand-600">Rp {{ number_format($paket->harga_per_orang, 0, ',', '.') }}</span>
                                 <span class="text-xs text-slate-500">/ orang</span>
                             </div>
-                            <span class="px-4 py-2 bg-slate-900 text-white font-semibold text-xs rounded-xl hover:bg-brand-600 transition">
-                                Lihat Tur
-                            </span>
+                            <a href="/paket/{{ $paket->id_paket }}/pesan" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl transition shadow-md shadow-brand-500/20 flex items-center space-x-1">
+                                <span>Pesan Tur</span>
+                                <span>&rarr;</span>
+                            </a>
                         </div>
                     </div>
                 @endforeach
