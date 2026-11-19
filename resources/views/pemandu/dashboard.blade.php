@@ -150,15 +150,48 @@
                                 @endif
                             </div>
 
-                            <div class="lg:text-right border-t lg:border-t-0 pt-4 lg:pt-0 border-slate-100 flex lg:flex-col justify-between items-end">
+                            <div class="lg:text-right border-t lg:border-t-0 pt-4 lg:pt-0 border-slate-100 flex lg:flex-col justify-between items-end gap-3">
                                 <div>
                                     <span class="text-xs text-slate-400 block">Total Pembayaran</span>
                                     <span class="text-xl font-black text-emerald-600">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</span>
                                 </div>
-                                <div class="mt-2">
+                                <div>
                                     <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 text-slate-700">
                                         {{ $order->pembayaran ? 'Status Bayar: ' . $order->pembayaran->status_bayar : 'Belum Ada Pembayaran' }}
                                     </span>
+                                </div>
+
+                                <!-- Tombol Aksi Pemandu: Terima / Selesaikan Tur -->
+                                <div class="mt-2 flex items-center space-x-2">
+                                    @if($order->status_reservasi === 'Menunggu')
+                                        <form action="/pemandu/reservasi/{{ $order->id_reservasi }}/status" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="status" value="Dikonfirmasi">
+                                            <button type="submit" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition">
+                                                ✓ Terima Pesanan
+                                            </button>
+                                        </form>
+
+                                        <form action="/pemandu/reservasi/{{ $order->id_reservasi }}/status" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="status" value="Ditolak">
+                                            <button type="submit" onclick="return confirm('Yakin ingin menolak pesanan ini?')" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs rounded-xl border border-rose-200 transition">
+                                                Tolak
+                                            </button>
+                                        </form>
+                                    @elseif($order->status_reservasi === 'Dikonfirmasi')
+                                        <form action="/pemandu/reservasi/{{ $order->id_reservasi }}/status" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="status" value="Selesai">
+                                            <button type="submit" onclick="return confirm('Apakah tur privat ini sudah selesai dilaksanakan bersama wisatawan?')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs rounded-xl shadow-md shadow-blue-500/20 transition flex items-center space-x-1.5">
+                                                <span>🎯 Tandai Tur Selesai</span>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                                            ✓ Tur Selesai
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
                         </div>

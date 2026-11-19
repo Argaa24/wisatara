@@ -88,4 +88,25 @@ class PemanduController extends Controller
 
         return redirect('/pemandu/dashboard')->with('success', 'Paket tur privat baru berhasil diterbitkan!');
     }
+
+    public function updateStatusReservasi(Request $request, $id)
+    {
+        $user = Auth::user();
+        if ($user->role !== 'pemandu') {
+            return redirect('/');
+        }
+
+        $pemandu = PemanduLokal::where('id_user', $user->id_user)->firstOrFail();
+        $reservasi = \App\Models\ReservasiTur::where('id_pemandu', $pemandu->id_pemandu)->findOrFail($id);
+
+        $request->validate([
+            'status' => ['required', 'in:Dikonfirmasi,Ditolak,Selesai'],
+        ]);
+
+        $reservasi->update([
+            'status_reservasi' => $request->status,
+        ]);
+
+        return back()->with('success', "Status reservasi berhasil diubah menjadi {$request->status}!");
+    }
 }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dasbor Wisatawan - Wisatara</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
 </head>
@@ -122,11 +123,50 @@
                             </div>
                         </div>
 
-                        <!-- Ulasan jika ada -->
-                        @if($res->ulasan)
-                            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center space-x-2 text-xs">
-                                <span class="text-amber-500 font-bold">Ulasan Anda: {{ str_repeat('⭐', $res->ulasan->rating) }}</span>
-                                <span class="text-slate-600 italic">"{{ $res->ulasan->komentar }}"</span>
+                        <!-- Bagian Ulasan Pasca Tur (Aturan Bisnis No 5) -->
+                        @if($res->status_reservasi === 'Selesai')
+                            <div class="mt-4 pt-4 border-t border-slate-100" x-data="{ openReview: false }">
+                                @if($res->ulasan)
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="text-amber-500 font-bold">Ulasan Anda: {{ str_repeat('⭐', $res->ulasan->rating) }}</span>
+                                        <span class="text-slate-600 italic">"{{ $res->ulasan->komentar }}"</span>
+                                    </div>
+                                @else
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs text-slate-500">Tur Anda telah selesai. Bagikan pengalaman Anda untuk membantu wisatawan lain!</span>
+                                        <button @click="openReview = !openReview" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl transition shadow-sm flex items-center space-x-1">
+                                            <span>⭐ Beri Ulasan & Rating</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Form Input Ulasan -->
+                                    <div x-show="openReview" x-transition class="mt-4 p-4 rounded-2xl bg-amber-50/60 border border-amber-200">
+                                        <form action="/wisatawan/reservasi/{{ $res->id_reservasi }}/ulasan" method="POST" class="space-y-3">
+                                            @csrf
+                                            <div>
+                                                <label class="block text-xs font-bold text-slate-700 mb-1">Berapa bintang untuk pemandu Anda?</label>
+                                                <div class="flex items-center space-x-4 text-xs font-semibold">
+                                                    @for($i = 5; $i >= 1; $i--)
+                                                        <label class="flex items-center space-x-1 cursor-pointer">
+                                                            <input type="radio" name="rating" value="{{ $i }}" {{ $i == 5 ? 'checked' : '' }} class="text-amber-500 focus:ring-amber-400">
+                                                            <span>{{ str_repeat('⭐', $i) }} ({{ $i }})</span>
+                                                        </label>
+                                                    @endfor
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label class="block text-xs font-bold text-slate-700 mb-1">Tuliskan ulasan & testimoni Anda:</label>
+                                                <textarea name="komentar" rows="2" required placeholder="Ceritakan bagaimana keramahan pemandu, cerita menarik di lapangan, atau spot yang paling Anda sukai..." class="w-full p-3 rounded-xl bg-white border border-amber-200 text-xs outline-none focus:border-amber-400"></textarea>
+                                            </div>
+
+                                            <div class="flex justify-end space-x-2">
+                                                <button type="button" @click="openReview = false" class="px-3 py-1.5 text-xs text-slate-500 hover:text-slate-800">Batal</button>
+                                                <button type="submit" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Kirim Ulasan</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                @endif
                             </div>
                         @endif
                     </div>

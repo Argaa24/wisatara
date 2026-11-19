@@ -27,7 +27,10 @@ Route::post('/paket/{id}/pesan', [BookingController::class, 'processBooking'])->
 // Dasbor & Fitur Khusus Berdasarkan Role
 Route::middleware('auth')->group(function () {
     Route::get('/wisatawan/dashboard', [DashboardController::class, 'wisatawan'])->name('wisatawan.dashboard');
+    Route::post('/wisatawan/reservasi/{id}/ulasan', [DashboardController::class, 'kirimUlasan'])->name('wisatawan.reservasi.ulasan');
+
     Route::get('/pemandu/dashboard', [DashboardController::class, 'pemandu'])->name('pemandu.dashboard');
+    Route::post('/pemandu/reservasi/{id}/status', [PemanduController::class, 'updateStatusReservasi'])->name('pemandu.reservasi.status');
     
     // Fitur Pemandu Menambah Paket Tur Mandiri
     Route::get('/pemandu/paket/create', [PemanduController::class, 'createPaket'])->name('pemandu.paket.create');

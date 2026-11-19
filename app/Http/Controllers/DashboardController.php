@@ -44,4 +44,37 @@ class DashboardController extends Controller
 
         return view('pemandu.dashboard', compact('user', 'pemandu', 'pesananMasuk'));
     }
+
+    public function kirimUlasan(Request $request, $id)
+    {
+        $user = Auth::user();
+        if ($user->role !== 'wisatawan') {
+            return redirect('/');
+        }
+
+        $wisatawan = Wisatawan::where('id_user', $user->id_user)->firstOrFail();
+        $reservasi = ReservasiTur::where('id_wisatawan', $wisatawan->id_wisatawan)
+            ->where('status_reservasi', 'Selesai')
+            ->findOrFail($id);
+
+        if (\App\Models\UlasanTur::where('id_reservasi', $reservasi->id_reservasi)->exists()) {
+            return back()->with('error', 'Anda sudah memberikan ulasan untuk tur ini.');
+        }
+
+        $request->validate([
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'komentar' => ['required', 'string', 'max:500'],
+        ]);
+
+        \App\Models\UlasanTur::create([
+            'id_reservasi' => $reservasi->id_reservasi,
+            'id_wisatawan' => $wisatawan->id_wisatawan,
+            'id_pemandu' => $reservasi->id_pemandu,
+            'rating' => $request->rating,
+            'komentar' => $request->komentar,
+            'tgl_ulasan' => now()->format('Y-m-d'),
+        ]);
+
+        return back()->with('success', 'Terima kasih! Ulasan dan rating Anda telah berhasil dikirim.');
+    }
 }

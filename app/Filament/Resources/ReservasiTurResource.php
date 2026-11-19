@@ -136,6 +136,21 @@ class ReservasiTurResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('confirm')
+                    ->label('Konfirmasi')
+                    ->icon('heroicon-o-check')
+                    ->color('info')
+                    ->visible(fn (ReservasiTur $record) => $record->status_reservasi === 'Menunggu')
+                    ->action(fn (ReservasiTur $record) => $record->update(['status_reservasi' => 'Dikonfirmasi'])),
+
+                Tables\Actions\Action::make('complete')
+                    ->label('Selesaikan')
+                    ->icon('heroicon-o-check-badge')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn (ReservasiTur $record) => in_array($record->status_reservasi, ['Menunggu', 'Dikonfirmasi']))
+                    ->action(fn (ReservasiTur $record) => $record->update(['status_reservasi' => 'Selesai'])),
+
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
