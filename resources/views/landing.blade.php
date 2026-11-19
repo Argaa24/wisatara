@@ -62,28 +62,25 @@
                     <a href="/register" class="px-5 py-2.5 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-full transition shadow-sm shadow-brand-500/20">
                         Daftar Akun
                     </a>
-                    <a href="/admin" title="Panel Khusus Admin Sistem" class="hidden sm:flex px-3.5 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full transition items-center space-x-1">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                        <span>Admin</span>
-                    </a>
                 @else
-                    @if(Auth::user()->role === 'admin')
-                        <a href="/admin" class="px-5 py-2.5 text-sm font-bold text-white bg-slate-900 hover:bg-brand-600 rounded-full transition shadow-sm">
-                            Dasbor Admin &rarr;
-                        </a>
-                    @elseif(Auth::user()->role === 'pemandu')
+                    @if(Auth::user()->role === 'pemandu')
                         <a href="/pemandu/dashboard" class="px-5 py-2.5 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-full transition shadow-sm">
-                            Dasbor Host &rarr;
+                            Dasbor Pemandu &rarr;
                         </a>
-                    @else
+                    @elseif(Auth::user()->role === 'wisatawan')
                         <a href="/wisatawan/dashboard" class="px-5 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full transition shadow-sm">
                             Reservasi Saya &rarr;
                         </a>
+                    @else
+                        {{-- Akun Admin: Tidak menampilkan tombol Dasbor Admin di navbar publik --}}
+                        <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
+                            👤 {{ Auth::user()->name ?? 'Admin' }}
+                        </span>
                     @endif
 
                     <form action="/logout" method="POST" class="inline">
                         @csrf
-                        <button type="submit" class="px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition border border-rose-200">
+                        <button type="submit" class="px-3.5 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-full transition border border-rose-200">
                             Keluar
                         </button>
                     </form>
