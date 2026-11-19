@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wisatara - Marketplace Pemandu Wisata Lokal & Private Tour</title>
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS CDN & Alpine.js -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -63,27 +64,71 @@
                         Daftar Akun
                     </a>
                 @else
-                    @if(Auth::user()->role === 'pemandu')
-                        <a href="/pemandu/dashboard" class="px-5 py-2.5 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-full transition shadow-sm">
-                            Dasbor Pemandu &rarr;
-                        </a>
-                    @elseif(Auth::user()->role === 'wisatawan')
-                        <a href="/wisatawan/dashboard" class="px-5 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full transition shadow-sm">
-                            Reservasi Saya &rarr;
-                        </a>
-                    @else
-                        {{-- Akun Admin: Tidak menampilkan tombol Dasbor Admin di navbar publik --}}
-                        <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
-                            👤 {{ Auth::user()->name ?? 'Admin' }}
-                        </span>
-                    @endif
-
-                    <form action="/logout" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="px-3.5 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-full transition border border-rose-200">
-                            Keluar
+                    <!-- Profile Dropdown Component -->
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" @click.outside="open = false" 
+                                class="flex items-center space-x-2.5 p-1.5 pr-3 rounded-full border border-slate-200 hover:border-slate-300 hover:shadow-sm bg-white transition cursor-pointer">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-teal-400 text-white font-bold flex items-center justify-center text-xs shadow-sm">
+                                {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}
+                            </div>
+                            <span class="text-xs font-bold text-slate-700">Profil</span>
+                            <svg class="w-3.5 h-3.5 text-slate-400 transition transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
-                    </form>
+
+                        <!-- Dropdown Menu -->
+                        <div x-show="open" 
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
+                             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 scale-95 -translate-y-2"
+                             class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl shadow-slate-200/80 border border-slate-200 py-2 z-50 text-xs" style="display: none;">
+                            
+                            <!-- Header Info Pengguna -->
+                            <div class="px-4 py-2.5 border-b border-slate-100">
+                                <p class="font-bold text-slate-800 text-sm truncate">{{ Auth::user()->name }}</p>
+                                <p class="text-slate-400 truncate mt-0.5 text-[11px]">{{ Auth::user()->email }}</p>
+                                <span class="inline-block mt-1.5 px-2 py-0.5 text-[10px] font-bold rounded-md uppercase tracking-wider
+                                    {{ Auth::user()->role === 'admin' ? 'bg-purple-100 text-purple-700' : '' }}
+                                    {{ Auth::user()->role === 'pemandu' ? 'bg-emerald-100 text-emerald-800' : '' }}
+                                    {{ Auth::user()->role === 'wisatawan' ? 'bg-blue-100 text-blue-700' : '' }}">
+                                    {{ Auth::user()->role === 'admin' ? 'Administrator' : (Auth::user()->role === 'pemandu' ? 'Pemandu Lokal' : 'Wisatawan') }}
+                                </span>
+                            </div>
+
+                            <!-- Menu Aksi Sesuai Role -->
+                            <div class="py-1">
+                                @if(Auth::user()->role === 'admin')
+                                    <a href="/admin" class="flex items-center space-x-2 px-4 py-2 text-slate-700 hover:bg-slate-50 font-semibold transition">
+                                        <span>⚙️</span>
+                                        <span>Panel Admin</span>
+                                    </a>
+                                @elseif(Auth::user()->role === 'pemandu')
+                                    <a href="/pemandu/dashboard" class="flex items-center space-x-2 px-4 py-2 text-slate-700 hover:bg-slate-50 font-semibold transition">
+                                        <span>🧭</span>
+                                        <span>Dasbor Pemandu</span>
+                                    </a>
+                                @else
+                                    <a href="/wisatawan/dashboard" class="flex items-center space-x-2 px-4 py-2 text-slate-700 hover:bg-slate-50 font-semibold transition">
+                                        <span>🎒</span>
+                                        <span>Reservasi Saya</span>
+                                    </a>
+                                @endif
+                            </div>
+
+                            <!-- Tombol Keluar -->
+                            <div class="border-t border-slate-100 pt-1 mt-1">
+                                <form action="/logout" method="POST">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left flex items-center space-x-2 px-4 py-2 text-rose-600 hover:bg-rose-50 font-bold transition">
+                                        <span>🚪</span>
+                                        <span>Keluar (Logout)</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 @endguest
             </div>
         </div>
