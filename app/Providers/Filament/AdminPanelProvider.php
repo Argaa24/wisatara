@@ -27,6 +27,12 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->brandName('Wisatara')
+            ->sidebarCollapsibleOnDesktop()
+            ->navigationGroups([
+                'Transaksi & Reservasi',
+                'Mitra Pemandu',
+                'Master Data',
+            ])
             ->login()
             ->colors([
                 'primary' => Color::Amber,
