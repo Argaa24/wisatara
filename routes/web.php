@@ -65,6 +65,7 @@ Route::post('/paket/{id}/pesan', [BookingController::class, 'processBooking'])->
 Route::middleware('auth')->group(function () {
     Route::get('/wisatawan/dashboard', [DashboardController::class, 'wisatawan'])->name('wisatawan.dashboard');
     Route::post('/wisatawan/reservasi/{id}/ulasan', [DashboardController::class, 'kirimUlasan'])->name('wisatawan.reservasi.ulasan');
+    Route::get('/wisatawan/reservasi/{id}/pdf', [DashboardController::class, 'unduhPdf'])->name('wisatawan.reservasi.pdf');
 
     Route::get('/pemandu/dashboard', [DashboardController::class, 'pemandu'])->name('pemandu.dashboard');
     Route::post('/pemandu/reservasi/{id}/status', [PemanduController::class, 'updateStatusReservasi'])->name('pemandu.reservasi.status');

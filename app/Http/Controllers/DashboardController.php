@@ -77,4 +77,29 @@ class DashboardController extends Controller
 
         return back()->with('success', 'Terima kasih! Ulasan dan rating Anda telah berhasil dikirim.');
     }
+
+    public function unduhPdf($id)
+    {
+        $user = Auth::user();
+        if ($user->role !== 'wisatawan') {
+            return redirect('/');
+        }
+
+        $wisatawan = Wisatawan::where('id_user', $user->id_user)->firstOrFail();
+        $reservasi = ReservasiTur::where('id_wisatawan', $wisatawan->id_wisatawan)
+            ->with(['wisatawan', 'paket.kota', 'paket.itinerary', 'pemandu', 'pembayaran'])
+            ->findOrFail($id);
+
+        if (! $reservasi->pembayaran || $reservasi->pembayaran->status_bayar !== 'Lunas') {
+            return back()->with('error', 'Bukti PDF hanya dapat diunduh setelah pembayaran berstatus Lunas.');
+        }
+
+        $kode = '#WST-' . str_pad($reservasi->id_reservasi, 4, '0', STR_PAD_LEFT);
+        $fileKode = 'WST-' . str_pad($reservasi->id_reservasi, 4, '0', STR_PAD_LEFT);
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('wisatawan.invoice-pdf', compact('reservasi', 'kode'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download("E-Tiket-Wisatara-{$fileKode}.pdf");
+    }
 }
