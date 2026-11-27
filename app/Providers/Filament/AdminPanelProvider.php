@@ -26,6 +26,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->brandName('Wisatara')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -37,8 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // AccountWidget dan FilamentInfoWidget dihapus sesuai revisi
             ])
             ->middleware([
                 EncryptCookies::class,
