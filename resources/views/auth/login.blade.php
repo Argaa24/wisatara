@@ -75,7 +75,6 @@
                 <ul class="space-y-1 font-mono text-[11px]">
                     <li>• <span class="font-semibold text-emerald-700">Pemandu:</span> bagus@wisatara.com (pw: password123)</li>
                     <li>• <span class="font-semibold text-blue-700">Wisatawan:</span> michael@gmail.com (pw: password123)</li>
-                    <li>• <span class="font-semibold text-slate-700">Admin:</span> admin@wisatara.com (pw: admin123)</li>
                 </ul>
             </div>
         </div>
